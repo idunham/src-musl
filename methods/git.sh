@@ -9,7 +9,7 @@
 		;;
 	conf)
 		$package get && cd $package && [ -e config.mak ] || \
-		$CONF_PKG
+		eval "$CONF_PKG"
 		cd -
 		;;
 	build)
