@@ -10,3 +10,11 @@
 *.lai
 *.la
 *.a
+
+# Directories 
+musl/
+
+# bak
+*.swp
+*.bak
+*~
