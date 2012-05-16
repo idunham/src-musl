@@ -1,5 +1,7 @@
 # double indirection in POSIX sh
 # assigns variables for building a specific package
+eval export VER=\$VER_`echo $PKG`
+eval export FMT=\$FMT_`echo $PKG`
 eval export MIR_PKG=\$MIR_`echo $PKG`
 eval export BRN_PKG=\$BRN_`echo $PKG`
 eval export CC_PKG=\$CC_`echo $PKG`
