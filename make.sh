@@ -16,7 +16,54 @@ musl(){
 	. methods/vars.sh
 	. methods/git.sh
 }
+linux(){
+	CC="$GCC"
+	MAJ=3.0
+	MIN=31
+	package=linux
+	FMT=tar.xz
+	DIR_PKG=${package}-${MAJ}
+	MIR_PKG="http://www.kernel.org/pub/linux/kernel/v3.x"
+	TMP_PKG="`pwd`/build/lin"
+	mkdir -p $TMP_PKG
+	case $1 in
+	get)
+	    rm -rf ${DIR_PKG}
+	    [ -e "${DIR_PKG}.${FMT}" ] || \
+		curl ${MIR_PKG}/${DIR_PKG}.${FMT} -o ${DIR_PKG}.${FMT}
+	    [ -e "patch-${MAJ}.${MIN}.xz" ] ||
+	  	curl ${MIR_PKG}/patch-${MAJ}.${MIN}.xz -o patch-${MAJ}.${MIN}.xz
+	    unxz --stdout "${DIR_PKG}.${FMT}" | tar xf - || \
+		rm -rf "./${DIR_PKG}/"
+	    cd ${DIR_PKG} && unxz --stdout "../patch-${MAJ}.${MIN}.xz" | patch -p1 
+	    cd -
+	;;
+	config)
+	    [ -e ${DIR_PKG}/.config ] || [ -e ${DIR_PKG}/defconfig ] || \
+		cp ./.config ${DIR_PKG}/.config && make silentoldconfig
+	;;
+	header)
+	    cd ${DIR_PKG} && make headers_install INSTALL_HDR_PATH=$TMP_PKG \
+		HOSTCFLAGS=-D_GNU_SOURCE && \
+		cd $TMP_PKG && sudo cp -r * $PREFIX 
+	    cd `dirname $TMP_PKG`&& cd ..
+	;;
+	esac
+}
+libnl(){
+	
+	export CFLAGS_LIBNL="-Os -fno-stack-protector"
+	export package=libnl
+	export PKG=LIBNL
+	export CONF_LIBNL="./autogen.sh && ./configure --prefix=$PREFIX --oldincludedir=$PREFIX/include"
+	. methods/vars.sh
+	. methods/git.sh
+}
 
-musl build
+#linux get
+linux header
+libnl build
+libnl install
+
 
 
