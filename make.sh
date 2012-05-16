@@ -4,7 +4,7 @@
 . control.env
 export PATH=${BINDIR}:${PATH}
 export `egrep  ^[A-Z_]*= control.env |awk -F= '{print $1}' | xargs`
-export CFLAGS="-fno-stack-protector"
+export CFLAGS="-fno-stack-protector -Os -D_GNU_SOURCE"
 
 musl(){
 	
@@ -59,11 +59,31 @@ libnl(){
 	. methods/vars.sh
 	. methods/git.sh
 }
-
-#linux get
+zlib(){
+	package=zlib
+	PKG=ZLIB
+	CONF_ZLIB="./configure --prefix=${PREFIX}"
+	. methods/vars.sh
+	. methods/tarconf.sh
+}
+ncurses(){
+	package=ncurses
+	PKG=NCURSE
+	CONF_NCURSE="./configure --prefix=${PREFIX} --without-cxx --with-falbacks=xterm"
+	. methods/vars.sh
+	. methods/tarconf.sh
+}
+linux get
 linux header
-libnl build
+musl build
+
+#zlib get
+#zlib build
+zlib install
+#libnl build
 libnl install
 
-
+ncurses patch
+#ncurses build
+ncurses install
 
