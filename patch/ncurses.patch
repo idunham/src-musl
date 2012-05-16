@@ -1,0 +1,12 @@
+diff -ur ncurses-5.9/ncurses/SigAction.h ncurses-5.9-d/ncurses/SigAction.h
+--- ncurses-5.9/ncurses/SigAction.h	2005-08-06 13:05:32.000000000 -0700
++++ ncurses-5.9-d/ncurses/SigAction.h	2012-04-03 16:32:56.841630774 -0700
+@@ -49,6 +49,8 @@
+ #define HAVE_SIGVEC 0
+ #endif
+ 
++#include <signal.h>
++
+ #if HAVE_SIGACTION
+ 
+ #if !HAVE_TYPE_SIGACTION
